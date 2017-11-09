@@ -53,15 +53,14 @@ int sw_uart_receive_byte(due_sw_uart *uart, char* data) {
     
     if (start == 0){
       _sw_uart_wait_half_T(uart); //meio T para sempre pegar o valor no meio do bit, e evitar momento de mudança
-    }
     
     /* code */
     // checa se bit ainda é 0
     if (digitalRead(uart->pin_rx) == 0) {
       startLoop = true;
     }
-    else {
-      return SW_UART_ERROR_FRAMING;
+  //  else {
+    //  return SW_UART_ERROR_FRAMING;
     }
   }
 
@@ -79,7 +78,7 @@ int sw_uart_receive_byte(due_sw_uart *uart, char* data) {
   // recebe paridade
   //rx_parity = calc_even_parity(uart, nchar);
    rx_parity = digitalRead(uart -> pin_rx); //conferir
-  _sw_uart_wait_T(uart);
+   _sw_uart_wait_T(uart);
 
   // recebe stop bit
   int stopbit = digitalRead(uart->pin_rx);

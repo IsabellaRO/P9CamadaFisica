@@ -22,7 +22,7 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
   sw_uart_write_data(uart, stringData, strlen(stringData));
 }
 
-// função para calcular paridade ímpar
+// Funcao para calcular paridade impar
 // retorna paridade
 int calc_even_parity(char data) {
 	int soma = 0;
@@ -38,10 +38,8 @@ int calc_even_parity(char data) {
 	}
   }
 
-// função para enviar um char (data 8 bits) via uart
+// Funcao para enviar um char (data 8 bits) via uart
 void sw_uart_write_byte(due_sw_uart *uart, char data) {
-
-
   
   // variável para armazenar paridade
   int parity = 0;
@@ -49,39 +47,34 @@ void sw_uart_write_byte(due_sw_uart *uart, char data) {
   // atualiza valor da paridade
   if(uart->paritybit == SW_UART_EVEN_PARITY) {
      parity = calc_even_parity(data);
-  }
-  else if(uart->paritybit == SW_UART_ODD_PARITY) {
+  } else if(uart->paritybit == SW_UART_ODD_PARITY) {
      parity = !calc_even_parity(data);
   }
   
   // envia start bit
-  digitalWrite(uart->pin_tx, LOW)
+  digitalWrite(uart->pin_tx, LOW);
   _sw_uart_wait_T(uart);
+
   
   // envia payload
   for(int i = 0; i < uart->databits; i++) {
     for(i = 0; i<sw_uart->databits; i++) {
-    digitalWrite(uart->pin_tx, data>>i);
-    }
+    	digitalWrite(uart->pin_tx,((data>>i) & one));
+	}
+    _sw_uart_wait_T(uart);
   }
-
 
   // envia paridade, se existir
   if(uart->paritybit != SW_UART_NO_PARITY) {
-   // ...
-   digitalWrite(uart->paritybit, parity);
-   _sw_uart_wait_T(uart);
+  	digitalWrite(uart->pin_tx, parity);
   }
-
   
-  // envia stop bit, se existir
+// envia stop bit, se existir
   for(int i = 0; i < uart->stopbits; i++) {
-    // ...
     digitalWrite(uart->stopbits, HIGH);
     _sw_uart_wait_T(uart);    
   }
 }
-
 
 // MCK 21MHz
 // 1093 para baudrate 9600/2

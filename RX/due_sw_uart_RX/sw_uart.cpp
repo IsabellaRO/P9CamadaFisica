@@ -22,10 +22,10 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
   sw_uart_write_data(uart, stringData, strlen(stringData));
 }
 
-int calc_even_parity(char data) {
+int calc_even_parity(due_sw_uart *sw_uart,char data) {
   int soma = 0;
-  int one = 0x01;
-  for(int i = 0; i<sw_uart->databits; i++) {
+  int one  = 0x01;
+  for(int i = 0; i< sw_uart->databits; i++) {
     soma += ((data>>i) & one);
   }
   if ((soma % 2) == 0) {
@@ -48,35 +48,40 @@ int sw_uart_receive_byte(due_sw_uart *uart, char* data) {
   // aguarda start bit
   bool startLoop = false;
   while(startLoop == false) {
-
-  // Confirma start BIT
-    int start = digitalRead(uart->pin_rx)
+    // Confirma start BIT
+    int start = digitalRead(uart->pin_rx);
+    
     if (start == 0){
       _sw_uart_wait_half_T(uart); //meio T para sempre pegar o valor no meio do bit, e evitar momento de mudança
+    }
     
-    
-      /* code */
-    
+    /* code */
     // checa se bit ainda é 0
-      if (digitalRead(uart->pin_rx) == 0) {
-        startLoop = true;
-      }
+    if (digitalRead(uart->pin_rx) == 0) {
+      startLoop = true;
+    }
+    else{
+      return SW_UART_ERROR_FRAMING;
     }
   }
 
+   _sw_uart_wait_half_T(uart);
+ 
   // recebe dados
+  int tmp;
   for(int i = 0; i < uart->databits; i++) {
-    data<<i
-    nchar = data | nchar
-    _sw_uart_wait_T(uart)
+    tmp = digitalRead(uart->pin_rx);
+    tmp = tmp<<i;
+    nchar = nchar | tmp;
+    _sw_uart_wait_T(uart);
   }
 
   // recebe paridade
-  rx_parity = calc_even_parity(data)
-  _sw_uart_wait_T(uart)  
+  rx_parity = calc_even_parity(uart, nchar);
+  _sw_uart_wait_T(uart)  ;
 
   // recebe stop bit
-  int stopbit = digitalRead(uart->pin_rx)
+  int stopbit = digitalRead(uart->pin_rx);
   
   // checa paridade
   if(parity != rx_parity) {

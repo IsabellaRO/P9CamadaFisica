@@ -24,10 +24,10 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
 
 // Funcao para calcular paridade impar
 // retorna paridade
-int calc_even_parity(char data) {
+int calc_even_parity(due_sw_uart *uart, char data) {
 	int soma = 0;
   int one = 0x01;
-	for(int i = 0; i<sw_uart->databits; i++) {
+	for(int i = 0; i<uart->databits; i++) {
 		soma += ((data>>i) & one);
 	}
 	if ((soma % 2) == 0) {
@@ -58,7 +58,7 @@ void sw_uart_write_byte(due_sw_uart *uart, char data) {
   
   // envia payload
   for(int i = 0; i < uart->databits; i++) {
-    for(i = 0; i<sw_uart->databits; i++) {
+    for(i = 0; i<uart->databits; i++) {
     	digitalWrite(uart->pin_tx,((data>>i) & one));
 	}
     _sw_uart_wait_T(uart);

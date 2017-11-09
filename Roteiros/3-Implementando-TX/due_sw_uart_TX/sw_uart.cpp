@@ -30,7 +30,8 @@ int calc_even_parity(due_sw_uart *uart, char data) {
 	for(int i = 0; i<uart->databits; i++) {
 		soma += ((data>>i) & one);
 	}
-	if ((soma % 2) == 0) {
+  int resultado = soma % 2;
+	if (resultado == 0) {
 		return 1;
 	}
 	else {
@@ -57,8 +58,9 @@ void sw_uart_write_byte(due_sw_uart *uart, char data) {
 
   // envia payload
   int one = 0x01;
-  for(int i = 0; i < uart->databits; i++) {
-    digitalWrite(uart->pin_tx,((data>>i) & one));
+  for(int i = 0; i<uart->databits; i++) {
+    int resultado = (data>>i) & one;
+    digitalWrite(uart->pin_tx, resultado);
     _sw_uart_wait_T(uart);
   }
 
@@ -69,9 +71,9 @@ void sw_uart_write_byte(due_sw_uart *uart, char data) {
   }
   
   // envia stop bit, se existir
-  digitalWrite(uart->stopbits, HIGH);
-  for(int i = 0; i < uart->stopbits; i++) {
-    digitalWrite(uart->stopbits, HIGH);
+  digitalWrite(uart->stopbits, HIGH); //verificar se realmente é pin_tx ou stopbits
+  for(int i = 0; i < uart->stopbits; i++) { //verificar se realmente é pin_tx ou stopbits
+    digitalWrite(uart->stopbits, HIGH); //verificar se realmente é pin_tx ou stopbits
     _sw_uart_wait_T(uart);    
   }
 }

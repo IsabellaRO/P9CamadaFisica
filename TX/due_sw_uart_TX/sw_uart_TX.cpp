@@ -26,11 +26,11 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
 // retorna paridade
 int calc_even_parity(char data) {
 	int soma = 0;
-  	int one = 1;
-	for(i = 0; i<sw_uart->databits; i++) {
+  int one = 0x01;
+	for(int i = 0; i<sw_uart->databits; i++) {
 		soma += ((data>>i) & one);
 	}
-	if (soma % 2 == 0) {
+	if ((soma % 2) == 0) {
 		return 1;
 	}
 	else {

@@ -22,13 +22,16 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
   sw_uart_write_data(uart, stringData, strlen(stringData));
 }
 
-int calc_even_parity(due_sw_uart *sw_uart, char data) {
+// Funcao para calcular paridade impar
+// retorna paridade
+int calc_even_parity(due_sw_uart *uart, char data) {
   int soma = 0;
-  int one  = 0x01;
-  for(int i = 0; i< sw_uart->databits; i++) {
+  int one = 0x01;
+  for(int i = 0; i<uart->databits; i++) {
     soma += ((data>>i) & one);
   }
-  if ((soma % 2) == 0) {
+  int resultado = soma % 2;
+  if (resultado == 0) {
     return 1;
   }
   else {
@@ -36,65 +39,43 @@ int calc_even_parity(due_sw_uart *sw_uart, char data) {
   }
 }
 
-// recebimento de dados da serial
-int sw_uart_receive_byte(due_sw_uart *uart, char* data) {
+// Funcao para enviar um char (data 8 bits) via uart
+void sw_uart_write_byte(due_sw_uart *uart, char data) {
+  
+  // variável para armazenar paridade
+  int parity = 0;
 
-  // variavel para recebimento de dados
-  char nchar  = 0;
-  
-  // variavel para calculo da paridade
-  char parity, rx_parity;
-  
-  // aguarda start bit
-  bool startLoop = false;
-  while(!startLoop) {
-    // Confirma start BIT
-    int start = digitalRead(uart->pin_rx);
-    
-    if (start == 0){
-      _sw_uart_wait_half_T(uart); //meio T para sempre pegar o valor no meio do bit, e evitar momento de mudança
-    
-      /* code */
-      // checa se bit ainda é 0
-      if (digitalRead(uart->pin_rx) == 0) {
-        startLoop = true;
-      }
-      else {
-        return SW_UART_ERROR_FRAMING;
-    }
+  // atualiza valor da paridade
+  if(uart->paritybit == SW_UART_EVEN_PARITY) {
+     parity = calc_even_parity(uart, data);
+  } else if(uart->paritybit == SW_UART_ODD_PARITY) {
+     parity = !calc_even_parity(uart, data);
   }
+  
+  // envia start bit
+  digitalWrite(uart->pin_tx, LOW);
+  _sw_uart_wait_T(uart);
 
-   _sw_uart_wait_T(uart);
- 
-  // recebe dados
-  int tmp;
-  for(int i = 0; i < uart->databits; i++) {
-    tmp = digitalRead(uart->pin_rx);
-    tmp = tmp<<i;
-    nchar = nchar | tmp;
+  // envia payload
+  int one = 0x01;
+  for(int i = 0; i<uart->databits; i++) {
+    int resultado = (data>>i) & one;
+    digitalWrite(uart->pin_tx, resultado);
     _sw_uart_wait_T(uart);
   }
 
-  // recebe paridade
-  //rx_parity = calc_even_parity(uart, nchar);
-   rx_parity = digitalRead(uart -> pin_rx); //conferir
-   _sw_uart_wait_T(uart);
-
-  // recebe stop bit
-  int stopbit = digitalRead(uart->pin_rx);
-  
-  // checa paridade
-  parity = calc_even_parity(uart, nchar);
-  if(parity != rx_parity) {
-    return SW_UART_ERROR_PARITY;
+  // envia paridade, se existir
+  if(uart->paritybit != SW_UART_NO_PARITY) {
+    digitalWrite(uart->pin_tx, parity);
+    _sw_uart_wait_T(uart);
   }
   
-  *data = nchar;
-  return SW_UART_SUCCESS;
-}
-
-void sw_uart_write_byte(due_sw_uart *uart, char data) {
- 
+  // envia stop bit, se existir
+  //digitalWrite(uart->stopbits, HIGH); //verificar se realmente é pin_tx ou stopbits
+  for(int i = 0; i < uart->stopbits; i++) { //verificar se realmente é pin_tx ou stopbits
+    digitalWrite(uart ->pin_tx, HIGH); //verificar se realmente é pin_tx ou stopbits
+    _sw_uart_wait_T(uart);    
+  }
 }
 
 // MCK 21MHz

@@ -14,7 +14,6 @@ void test_write() {
   sw_uart_write_string(&uart,"camFisica\n");
   delay(50);
 }
-file:///home/chends888/Documents/P9CamadaFisica/TX/due_sw_uart_TX/due_sw_uart_TX.ino
 
 void test_receive() {
   char data;

@@ -47,7 +47,7 @@ int sw_uart_receive_byte(due_sw_uart *uart, char* data) {
   char parity, rx_parity;
 
   //variável para checagem do start bit
-  bool startLoop = false;  
+  bool startLoop = false; 
 
   // aguarda start bit
   while(!startLoop) {

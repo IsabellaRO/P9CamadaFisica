@@ -1,16 +1,18 @@
----
-title: Camada Física -  APS 9 - Serialização/Desserialização 
-author: Rafael Corsi - rafael.corsi@insper.edu.br
-date: Outubro - 2017
----
+# Projeto 9 : Serialização/Desserialização
 
-![Interface entre módulos](./doc/projeto.png){width=50%}
+## Introdução
 
-# APS 9 : Serialização/Desserialização 
+O principal objetivo deste projeto é a serialização e desserialização de dados ao nível de programação mais baixo, a manipulação dos bits individuais. Para manipular a camada física do protocolo da comunicação utilizamos o C++, uma das únicas linguagens de programação capazes de manipular facilmente bits individuais de uma mensagem.
 
-O objetivo principal desse projeto é o do entendimento de como uma mensagem é serializada e desserializada nos níveis mais baixos de uma comunicação.
+# Comunicação UART
 
-# Projeto
+Foi utilizada a comunicação UART (Universal Asynchoronous Receiver-Transmitter), ela não é um protocolo, mas sim um modo de enviar dados, sua principal característica é despensar a utilização de um clock externo para sincronizar o envio e recebimento de dados. Para que isso seja possível é necessário um circuito específico, por esta razão foram utilizados dois Arduinos Due para a comunicação.
+
+
+
+
+
+
 
 Implementar a serialização/desserialização de um protocolo de comunicação (sugerimos o UART) em um arduino Due via software. 
 

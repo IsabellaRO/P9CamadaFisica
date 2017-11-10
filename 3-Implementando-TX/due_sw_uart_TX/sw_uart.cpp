@@ -4,9 +4,9 @@
 void sw_uart_setup(due_sw_uart *uart, int rx, int tx, int stopbits, int databits, int paritybit) {
   uart->pin_tx     = tx;
   uart->pin_rx     = rx;
-  uart->stopbits   = stopbits;
-  uart->paritybit  = paritybit;
-  uart->databits   = databits;
+  uart->stopbits   = stopbits; //len de stopbits
+  uart->paritybit  = paritybit; //len de paritybit
+  uart->databits   = databits; //len de data
   pinMode(rx, INPUT);
   pinMode(tx, OUTPUT);
   digitalWrite(tx, HIGH);
@@ -22,8 +22,9 @@ void sw_uart_write_string(due_sw_uart *uart, char* stringData) {
   sw_uart_write_data(uart, stringData, strlen(stringData));
 }
 
-// Funcao para calcular paridade impar
-// retorna paridade
+
+
+// função para calcular paridade ímpar, retorna o bit paridade
 int calc_even_parity(due_sw_uart *uart, char data) {
   int soma = 0;
   int one = 0x01;
@@ -39,7 +40,7 @@ int calc_even_parity(due_sw_uart *uart, char data) {
   }
 }
 
-// Funcao para enviar um char (data 8 bits) via uart
+// função para enviar um char (data 8 bits) via uart
 void sw_uart_write_byte(due_sw_uart *uart, char data) {
   
   // variável para armazenar paridade
@@ -71,9 +72,8 @@ void sw_uart_write_byte(due_sw_uart *uart, char data) {
   }
   
   // envia stop bit, se existir
-  //digitalWrite(uart->stopbits, HIGH); //verificar se realmente é pin_tx ou stopbits
-  for(int i = 0; i < uart->stopbits; i++) { //verificar se realmente é pin_tx ou stopbits
-    digitalWrite(uart ->pin_tx, HIGH); //verificar se realmente é pin_tx ou stopbits
+  for(int i = 0; i < uart->stopbits; i++) {
+    digitalWrite(uart ->pin_tx, HIGH);
     _sw_uart_wait_T(uart);    
   }
 }

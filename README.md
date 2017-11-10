@@ -14,7 +14,7 @@ Foi utilizada a comunicação UART (Universal Asynchoronous Receiver-Transmitter
 ## Onda gerada pelo programa
 O programa gera uma onda, em teoria quadrada, com picos representando os bits 1 e os bits 0. Um exemplo de onda pode ser observado a seguir.
 
-
+![onda](imgs/Captura de tela de 2017-11-10 13-37-07.png)
 
 
 

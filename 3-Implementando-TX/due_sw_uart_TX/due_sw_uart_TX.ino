@@ -11,7 +11,7 @@ void loop() {
 }
 
 void test_write() {
-  sw_uart_write_string(&uart,"Cam-Fisica\n");
+  sw_uart_write_string(&uart,"CCCCCCCCCCCCCCCCCCCCCCCC");
   delay(50);
 }
 
